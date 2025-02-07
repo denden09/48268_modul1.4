@@ -5,34 +5,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.samples.apps.sunflower.R
 
 @Composable
-fun PlantDetailDescription(plantName: String, description: String) {
-    Surface {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            // Title - Equivalent to old h5
-            Text(
-                text = plantName,
-                style = MaterialTheme.typography.titleLarge
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+fun PlantName(name: String) {
+    Text(
+        text = name,
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(R.dimen.margin_small))
+            .wrapContentWidth(Alignment.CenterHorizontally)
+    )
+}
 
-            // Body - Equivalent to old body1
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Placeholder text from the original Compose example
-            Text("Hello Compose")
-        }
+@Preview
+@Composable
+fun PlantNamePreview() {
+    MaterialTheme {
+        PlantName("Apple")
     }
 }

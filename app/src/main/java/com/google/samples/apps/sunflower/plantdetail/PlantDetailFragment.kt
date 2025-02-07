@@ -27,7 +27,8 @@ import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.databinding.FragmentPlantDetailBinding
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
-
+import androidx.compose.material3.Surface
+import com.google.samples.apps.sunflower.plantdetail.PlantDetailDescription
 /**
  * A fragment representing a single Plant detail screen.
  */

@@ -28,6 +28,11 @@
             type="com.google.samples.apps.sunflower.plantdetail.PlantDetailFragment.Callback" />
     </data>
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -174,5 +179,7 @@
             app:srcCompat="@drawable/ic_plus" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 
 </layout>

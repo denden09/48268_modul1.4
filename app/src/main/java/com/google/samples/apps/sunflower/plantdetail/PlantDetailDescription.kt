@@ -10,8 +10,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.Alignment
-import androidx.annotation.StringRes
-import androidx.annotation.PluralsRes
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.dimensionResource
@@ -19,7 +17,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.livedata.observeAsState
 import com.google.samples.apps.sunflower.R
 
@@ -103,17 +100,33 @@ private fun PlantDescription(description: String) {
 
 @Preview
 @Composable
+private fun PlantDetailContentPreview() {
+    val plant = Plant("id", "Apple", "HTML<br><br>description", 3, 30, "")
+    SunflowerTheme {
+        PlantDetailContent(plant)
+    }
+}
+
+@Preview
+@Composable
+private fun PlantNamePreview() {
+    SunflowerTheme {
+        PlantName("Apple")
+    }
+}
+
+@Preview
+@Composable
 private fun PlantWateringPreview() {
-    MaterialTheme {
+    SunflowerTheme {
         PlantWatering(7)
     }
 }
 
 @Preview
 @Composable
-private fun PlantDetailContentPreview() {
-    val plant = Plant("id", "Apple", "HTML<br><br>description", 3, 30, "")
-    MaterialTheme {
-        PlantDetailContent(plant)
+private fun PlantDescriptionPreview() {
+    SunflowerTheme {
+        PlantDescription("HTML<br><br>description")
     }
 }

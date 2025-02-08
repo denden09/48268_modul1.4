@@ -15,3 +15,12 @@
  */
 
 include ':app'
+
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()  // Ensure JetBrains plugins can be found
+    }
+}
+

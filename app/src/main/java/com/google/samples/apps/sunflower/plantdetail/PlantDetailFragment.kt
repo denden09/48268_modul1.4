@@ -13,12 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.R
@@ -26,8 +22,6 @@ import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.databinding.FragmentPlantDetailBinding
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
-import androidx.compose.material3.Surface
-import androidx.lifecycle.compose.collectAsStateWithLifecycle // Recommended for state management
 
 class PlantDetailFragment : Fragment() {
 
@@ -89,15 +83,20 @@ class PlantDetailFragment : Fragment() {
                 }
             }
 
-            // Set up Jetpack Compose content
-            composeView.setContent {
-                MaterialTheme {
-                    PlantDetailDescription(plantDetailViewModel)
+            // Set up Jetpack Compose content with ViewCompositionStrategy
+            composeView.apply {
+                setViewCompositionStrategy(
+                    ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+                )
+                setContent {
+                    MaterialTheme {
+                        PlantDetailDescription(plantDetailViewModel)
+                    }
                 }
             }
         }
 
-        setHasOptionsMenu(true)
+
         return binding.root
     }
 
@@ -106,7 +105,7 @@ class PlantDetailFragment : Fragment() {
             getString(R.string.share_text_plant, plant.name)
         } ?: ""
 
-        val shareIntent = ShareCompat.IntentBuilder.from(requireActivity())
+        val shareIntent = ShareCompat.IntentBuilder(requireActivity())
             .setText(shareText)
             .setType("text/plain")
             .createChooserIntent()

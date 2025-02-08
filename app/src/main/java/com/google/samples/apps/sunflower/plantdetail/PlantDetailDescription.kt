@@ -1,5 +1,7 @@
 package com.google.samples.apps.sunflower.plantdetail
 
+import android.text.method.LinkMovementMethod
+import android.widget.TextView
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -13,15 +15,17 @@ import androidx.annotation.PluralsRes
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
 import com.google.samples.apps.sunflower.data.Plant
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.runtime.livedata.observeAsState // ✅ Correct Import for LiveData
-import com.google.samples.apps.sunflower.R // ✅ Import for resource access
+import androidx.compose.runtime.livedata.observeAsState
+import com.google.samples.apps.sunflower.R
 
 @Composable
 fun PlantDetailDescription(plantDetailViewModel: PlantDetailViewModel) {
-    val plant = plantDetailViewModel.plant.observeAsState().value // ✅ Fix: Correct LiveData handling
+    val plant = plantDetailViewModel.plant.observeAsState().value
 
     plant?.let {
         PlantDetailContent(it)
@@ -31,17 +35,14 @@ fun PlantDetailDescription(plantDetailViewModel: PlantDetailViewModel) {
 @Composable
 fun PlantDetailContent(plant: Plant) {
     Surface(
-        color = MaterialTheme.colorScheme.surface, // ✅ Ensures appropriate background color
+        color = MaterialTheme.colorScheme.surface,
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(Modifier.padding(dimensionResource(id = R.dimen.margin_normal))) {
             PlantName(plant.name)
             PlantWatering(plant.wateringInterval)
-            Spacer(modifier = Modifier.height(16.dp)) // Adds spacing before description
-            Text(
-                text = plant.description,
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Spacer(modifier = Modifier.height(16.dp))
+            PlantDescription(plant.description)
         }
     }
 }
@@ -52,7 +53,7 @@ fun PlantName(name: String) {
         text = name,
         style = MaterialTheme.typography.titleLarge,
         fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(bottom = 8.dp) // Adds spacing before watering info
+        modifier = Modifier.padding(bottom = 8.dp)
     )
 }
 
@@ -66,7 +67,7 @@ private fun PlantWatering(wateringInterval: Int) {
         val normalPadding = dimensionResource(id = R.dimen.margin_normal)
 
         Text(
-            text = stringResource(id = R.string.watering_needs_prefix), // ✅ Fix: Correct resource access
+            text = stringResource(id = R.string.watering_needs_prefix),
             color = MaterialTheme.colorScheme.primaryContainer,
             fontWeight = FontWeight.Bold,
             modifier = centerWithPaddingModifier.padding(top = normalPadding)
@@ -82,6 +83,24 @@ private fun PlantWatering(wateringInterval: Int) {
     }
 }
 
+@Composable
+private fun PlantDescription(description: String) {
+    val htmlDescription = remember(description) {
+        HtmlCompat.fromHtml(description, HtmlCompat.FROM_HTML_MODE_COMPACT)
+    }
+
+    AndroidView(
+        factory = { context ->
+            TextView(context).apply {
+                movementMethod = LinkMovementMethod.getInstance()
+            }
+        },
+        update = {
+            it.text = htmlDescription
+        }
+    )
+}
+
 @Preview
 @Composable
 private fun PlantWateringPreview() {
@@ -93,7 +112,7 @@ private fun PlantWateringPreview() {
 @Preview
 @Composable
 private fun PlantDetailContentPreview() {
-    val plant = Plant("id", "Apple", "A delicious fruit.", 3, 30, "")
+    val plant = Plant("id", "Apple", "HTML<br><br>description", 3, 30, "")
     MaterialTheme {
         PlantDetailContent(plant)
     }

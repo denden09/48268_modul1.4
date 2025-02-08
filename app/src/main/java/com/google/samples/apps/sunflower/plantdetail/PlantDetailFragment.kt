@@ -15,8 +15,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
@@ -28,10 +27,8 @@ import com.google.samples.apps.sunflower.databinding.FragmentPlantDetailBinding
 import com.google.samples.apps.sunflower.utilities.InjectorUtils
 import com.google.samples.apps.sunflower.viewmodels.PlantDetailViewModel
 import androidx.compose.material3.Surface
-import com.google.samples.apps.sunflower.plantdetail.PlantDetailDescription
-/**
- * A fragment representing a single Plant detail screen.
- */
+import androidx.lifecycle.compose.collectAsStateWithLifecycle // Recommended for state management
+
 class PlantDetailFragment : Fragment() {
 
     private val args: PlantDetailFragmentArgs by navArgs()
@@ -65,21 +62,14 @@ class PlantDetailFragment : Fragment() {
             }
 
             var isToolbarShown = false
-
-            // Scroll change listener begins at Y = 0 when image is fully collapsed
             plantDetailScrollview.setOnScrollChangeListener(
                 NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
 
-                    // User scrolled past image to height of toolbar
                     val shouldShowToolbar = scrollY > toolbar.height
 
                     if (isToolbarShown != shouldShowToolbar) {
                         isToolbarShown = shouldShowToolbar
-
-                        // Use shadow animator to add elevation if toolbar is shown
                         appbar.isActivated = shouldShowToolbar
-
-                        // Show the plant name if toolbar is shown
                         toolbarLayout.isTitleEnabled = shouldShowToolbar
                     }
                 }
@@ -102,10 +92,7 @@ class PlantDetailFragment : Fragment() {
             // Set up Jetpack Compose content
             composeView.setContent {
                 MaterialTheme {
-                    PlantDetailDescription(
-                        plantDetailViewModel.plant.value?.name ?: "Loading...",
-                        plantDetailViewModel.plant.value?.description ?: ""
-                    )
+                    PlantDetailDescription(plantDetailViewModel)
                 }
             }
         }
@@ -114,7 +101,6 @@ class PlantDetailFragment : Fragment() {
         return binding.root
     }
 
-    @Suppress("DEPRECATION")
     private fun createShareIntent() {
         val shareText = plantDetailViewModel.plant.value?.let { plant ->
             getString(R.string.share_text_plant, plant.name)
@@ -138,23 +124,5 @@ class PlantDetailFragment : Fragment() {
 
     interface Callback {
         fun add(plant: Plant?)
-    }
-}
-
-/**
- * Jetpack Compose function to display plant details.
- */
-@Composable
-fun PlantDetailDescription(plantName: String, description: String) {
-    Surface {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Text(text = plantName, style = MaterialTheme.typography.titleLarge)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = description, style = MaterialTheme.typography.bodyMedium)
-        }
     }
 }
